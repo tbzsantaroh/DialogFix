@@ -1,0 +1,2 @@
+# DialogFix
+htmlのDialog要素を使いやすくするスクリプト
