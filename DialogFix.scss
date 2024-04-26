@@ -1,0 +1,76 @@
+/* Copyright (c) 2024 tbzsantaroh */
+/* This software is released under the MIT License, see LICENSE. */
+
+dialog[data-dmodal-id] {
+  --XbuttonSize: 5vh; /* 閉じるボタンのサイズ padding-topと画像自体のサイズを同じにする */
+  --XbuttonImg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3Cstyle%3E.cls-1,.cls-2%7Bfill:none;%7D.cls-2%7Bstroke:%23fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;%7D%3C/style%3E%3C/defs%3E%3Cg id='_2' data-name='2'%3E%3Cg id='Rectangle'%3E%3Crect class='cls-1' width='48' height='48'/%3E%3C/g%3E%3Cg id='icon_data'%3E%3Cline class='cls-2' x1='12.13' y1='12.63' x2='36.13' y2='36.13'/%3E%3Cline class='cls-2' x1='12.38' y1='36.38' x2='35.88' y2='12.38'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); /* 閉じるボタンのSVG画像 */
+
+
+  border: none; /* dialogデフォルトCSS解除  */
+  background: transparent;  /* dialogデフォルトCSS解除 */
+  
+  &::backdrop {
+    backdrop-filter: blur(5px) brightness(50%); /* 背景ぼかし */
+  }
+  .diaWrap {  /* 外側ラッパー 閉じるボタン表示するためのエリア確保用 */
+    padding: var(--XbuttonSize) 0 0;
+    cursor: pointer;
+    background: {
+      position: top right;
+      repeat: no-repeat;
+      size: var(--XbuttonSize);
+      image:  var(--XbuttonImg);
+    }
+  }
+  .diaUnClose { /* 一番内側のコンテンツ領域ラッパー */
+    max-height: 90vh;
+    overflow: auto;
+  }
+
+  /* youtubeモード時の設定 */
+  &[data-dmodal-type="youtube"] .diaUnClose {
+    overflow: visible;  /* スクロールバーを出さない youtubeを切りとらない */
+    max-width: 1920px;
+    @media screen and (orientation: portrait) {
+      width: 90vw;
+    }
+    @media screen and (orientation: landscape) {
+      width: 70vw;
+    }
+    
+    iframe {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+    }
+  }
+
+  /* lightboxモード時の設定 */
+  &[data-dmodal-type="img"] .diaUnClose {
+    overflow: visible;   /* スクロールバーを出さない 画像を切りとらない */
+  }
+  &[data-dmodal-type="img"] img {
+    max-width: 100%; /* 縦スクロールバーを出さない  */
+    vertical-align: middle; /* 画像特有のマージン解除 */
+    max-height: calc(90vh - var(--XbuttonSize));  /* 閉じるボタンのぶん高さを引く */
+  }
+
+
+  /* jsで使う開く・閉じるアニメーション */
+  &[data-show-from],
+  &[data-hide-to],
+  &::backdrop { /*  dialogと背景のアニメーション速度 */
+    transition: .3s;
+  }
+
+  &[data-show-from],
+  &[data-hide-to] { /* dialogの表示前、非表示後 */
+    transform: scale(.9);
+    opacity: 0;
+  }
+
+  &[data-show-from]::backdrop,
+  &[data-hide-to]::backdrop { /* dialogの表示前、非表示後は背景を透明にする */
+    opacity: 0;
+  }
+}
